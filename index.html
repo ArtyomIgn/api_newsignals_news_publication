@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News Feed</title>
+</head>
+<body>
+  <div id="news-container">
+    <h2>Latest News</h2>
+    <div id="news-list">Waiting for news...</div>
+  </div>
+
+  <script>
+    async function fetchLatestNews() {
+      try {
+        const response = await fetch('https://91b6-79-137-207-197.ngrok-free.app/news'); // Replace with your ngrok forwarding URL
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        
+        const newsContainer = document.getElementById('news-list');
+        newsContainer.innerHTML = ''; // Clear previous content
+
+        data.articles.forEach((article) => {
+          const newsItem = document.createElement('div');
+          newsItem.classList.add('news-item');
+
+          const title = document.createElement('h3');
+          title.textContent = article.title;
+
+          const description = document.createElement('p');
+          description.textContent = article.description;
+
+          newsItem.appendChild(title);
+          newsItem.appendChild(description);
+          newsContainer.appendChild(newsItem);
+        });
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        document.getElementById('news-list').textContent = 'Waiting for news...';
+      }
+    }
+
+    // Polling function to check for new news every 30 seconds
+    setInterval(fetchLatestNews, 30000); // Adjust time interval as needed
+
+    // Initial fetch to load any existing news
+    fetchLatestNews();
+  </script>
+
+  <style>
+    #news-container {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .news-item {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    .news-item h3 {
+      margin: 0 0 5px 0;
+      font-size: 18px;
+    }
+
+    .news-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+  </style>
+</body>
+</html>
